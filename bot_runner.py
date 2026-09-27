@@ -48,9 +48,20 @@ def send_discord(webhook_url: str, embed: dict = None, content: str = None):
 
 
 def get_btc_price():
-    r = requests.get("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT", timeout=15)
-    data = r.json()
-    return float(data["lastPrice"]), float(data["priceChangePercent"]), float(data["highPrice"]), float(data["lowPrice"])
+    # CoinGecko — works reliably from GitHub Actions runners (Binance blocks them).
+    r = requests.get(
+        "https://api.coingecko.com/api/v3/coins/bitcoin"
+        "?localization=false&tickers=false&market_data=true"
+        "&community_data=false&developer_data=false&sparkline=false",
+        timeout=15,
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    data = r.json()["market_data"]
+    price = float(data["current_price"]["usd"])
+    change_pct = float(data["price_change_percentage_24h"])
+    high = float(data["high_24h"]["usd"])
+    low = float(data["low_24h"]["usd"])
+    return price, change_pct, high, low
 
 
 # ---------------- PRICE ----------------
