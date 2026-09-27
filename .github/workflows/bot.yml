@@ -1,0 +1,52 @@
+name: BTC Discord Bot
+
+on:
+
+schedule:
+
+# GitHub's minimum interval is 5 minutes
+
+cron: "*/5** * *"
+
+workflow_dispatch: {} # lets you also run it manually from the Actions tab to test
+
+jobs:
+
+run-bot:
+
+runs-on: ubuntu-latest
+
+steps:
+
+- name: Checkout repo
+
+uses: actions/checkout@v4
+
+name: Set up Python
+
+uses: actions/setup-python@v5
+
+with:
+
+bot.yml
+with:
+
+python-version: "3.11"
+
+name: Install dependencies
+
+run: pip install -r requirements.txt
+
+name: Run bot
+
+env:
+
+WEBHOOK_URL_DEFAULT: ${{ secrets.WEBHOOK_URL_DEFAULT }}
+
+WEBHOOK_URL_PRICE: ${{ secrets.WEBHOOK_URL_PRICE }}
+
+WEBHOOK_URL_SESSIONS: ${{ secrets.WEBHOOK_URL_SESSIONS }}
+
+WEBHOOK_URL_NEWS: ${{ secrets.WEBHOOK_URL_NEWS }}
+
+run: python bot_runner.py
